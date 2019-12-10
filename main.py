@@ -40,6 +40,7 @@ def main(args):
     print(args)
     random.seed(args.seed)
     torch.manual_seed(args.seed)
+    device = torch.device('cuda' if args.cuda else 'cpu')
     pXY = util.CorrelatedStandardNormals(args.dim, args.rho)
 
     models = {
@@ -56,6 +57,8 @@ def main(args):
         'doe': util.DoE(args.dim, args.hidden, args.layers, 'gauss'),
         'doe_l': util.DoE(args.dim, args.hidden, args.layers, 'logistic')
     }
+    for name in models:
+        models[name] = models[name].to(device)
     control_weights(args, models)
 
     optims = {name: torch.optim.Adam(models[name].parameters(), lr=args.lr)
@@ -64,6 +67,8 @@ def main(args):
 
     for step in range(1, args.steps + 1):
         X, Y = pXY.draw_samples(args.N)
+        X = X.to(device)
+        Y = Y.to(device)
         XY_package = torch.cat([X.repeat_interleave(X.size(0), 0),
                                 Y.repeat(Y.size(0), 1)], dim=1)
         L = {}
@@ -85,6 +90,8 @@ def main(args):
     # Final evaluation
     M = 10 * args.N
     X, Y = pXY.draw_samples(M)
+    X = X.to(device)
+    Y = Y.to(device)
     XY_package = torch.cat([X.repeat_interleave(M, 0), Y.repeat(M, 1)], dim=1)
     test_MI = {}
     for name in models:
@@ -103,7 +110,7 @@ def main(args):
 def meta_main(args):
 
     hypers = OrderedDict({
-        'hidden': [64, 128],
+        'hidden': [64, 128, 256, 512],
         'layers': [1],
         'lr': [0.01, 0.003, 0.001, 0.0003],
         'init': [0.0, 0.1, 0.05],
