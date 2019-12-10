@@ -110,7 +110,7 @@ def main(args):
 def meta_main(args):
 
     hypers = OrderedDict({
-        'hidden': [64, 128, 256, 512],
+        'hidden': [64, 128, 256],
         'layers': [1],
         'lr': [0.01, 0.003, 0.001, 0.0003],
         'init': [0.0, 0.1, 0.05],
