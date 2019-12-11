@@ -86,7 +86,7 @@ def main(args):
         print('ln N: {:.2f} | I(X,Y): {:.2f}'.format(math.log(args.N), pXY.I()))
 
     # Final evaluation
-    M = 10 * args.N
+    M = args.c * args.N
     X, Y = pXY.draw_samples(M)
     XY_package = torch.cat([X.repeat_interleave(M, 0), Y.repeat(M, 1)], dim=1)
     test_MI = {}
@@ -145,7 +145,7 @@ def meta_main(args):
 
     plt.figure(figsize=(12,5))
     x = range(1, args.steps + 1)
-    plt.plot(x, best_train_MIs['doe'], "-r", label='DoE (Gauss)',
+    plt.plot(x, best_train_MIs['doe'], "-r", label='DoE (Gaussian)',
              linewidth=0.5)
     plt.plot(x, best_train_MIs['doe_l'], color='tab:orange',
              label='DoE (Logistic)', linewidth=0.5)
@@ -164,14 +164,15 @@ def meta_main(args):
     plt.xlim(1, args.steps)
     plt.savefig(args.figname + '.pdf', bbox_inches='tight')
 
+    M = args.c * args.N
     print('-'*150)
-    print('Best test estimates on {:d} samples'.format(10 * args.N))
+    print('Best test estimates on {:d} samples'.format(M))
     print('-'*150)
     for name in best_test_MI:
         print('{:10s}: {:6.2f} \t\t {:s}'.format(name, best_test_MI[name],
                                                  str(bestargs[name])))
     print('-'*150)
-    print('ln({:d}): {:.2f}'.format(10 * args.N, math.log(10 * args.N)))
+    print('ln({:d}): {:.2f}'.format(M, math.log(M)))
     print('I(X,Y): {:.2f}'.format(mi))
 
 
@@ -180,9 +181,12 @@ if __name__ == '__main__':
 
     parser.add_argument('--N', type=int, default=64,
                         help='number of samples [%(default)d]')
-    parser.add_argument('--rho', type=float, default=0.5,
+    parser.add_argument('--c', type=int, default=1,
+                        help='c*N is the number of samples for final '
+                        'evaluation [%(default)g]')
+    parser.add_argument('--rho', type=float, default=0.9,
                         help='correlation coefficient [%(default)g]')
-    parser.add_argument('--dim', type=int, default=20,
+    parser.add_argument('--dim', type=int, default=128,
                         help='number of dimensions [%(default)d]')
     parser.add_argument('--hidden', type=int, default=100,
                         help='dimension of hidden states [%(default)d]')
