@@ -265,11 +265,12 @@ class FF(nn.Module):
 
 class CorrelatedStandardNormals(object):
 
-    def __init__(self, dim, rho):
+    def __init__(self, dim, rho, device):
         assert abs(rho) <= 1
         self.dim = dim
         self.rho = rho
-        self.pdf = MultivariateNormal(torch.zeros(dim), torch.eye(dim))
+        self.pdf = MultivariateNormal(torch.zeros(dim).to(device),
+                                      torch.eye(dim).to(device))
 
     def I(self):
         num_nats = - self.dim / 2 * math.log(1 - math.pow(self.rho, 2)) \

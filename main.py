@@ -41,7 +41,7 @@ def main(args):
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     device = torch.device('cuda' if args.cuda else 'cpu')
-    pXY = util.CorrelatedStandardNormals(args.dim, args.rho)
+    pXY = util.CorrelatedStandardNormals(args.dim, args.rho, device)
 
     models = {
         'dv': util.SingleSampleEstimator(args.dim, args.hidden, args.layers,
@@ -67,8 +67,6 @@ def main(args):
 
     for step in range(1, args.steps + 1):
         X, Y = pXY.draw_samples(args.N)
-        X = X.to(device)
-        Y = Y.to(device)
         XY_package = torch.cat([X.repeat_interleave(X.size(0), 0),
                                 Y.repeat(Y.size(0), 1)], dim=1)
         L = {}
@@ -90,13 +88,11 @@ def main(args):
     # Final evaluation
     M = 10 * args.N
     X, Y = pXY.draw_samples(M)
-    X = X.to(device)
-    Y = Y.to(device)
     XY_package = torch.cat([X.repeat_interleave(M, 0), Y.repeat(M, 1)], dim=1)
     test_MI = {}
     for name in models:
         models[name].eval()
-        test_MI[name] = -models[name](X, Y, XY_package)
+        test_MI[name] = -models[name](X, Y, XY_package).item()
 
     print('-'*150)
     print('Estimates on {:d} samples | '.format(M), end='')
@@ -139,7 +135,10 @@ def meta_main(args):
                 best_train_MIs[name] = train_MIs[name]
                 bestargs[name] = copy.deepcopy(args)
             else:
-                if abs(mi - test_MI[name]) < abs(mi - best_test_MI[name]):
+                if math.isnan(best_test_MI[name]) or \
+                   abs(mi - test_MI[name]) < abs(mi - best_test_MI[name]):
+                    print('*** New best test MI %g for %s from previous best %g'
+                          % (test_MI[name], name, best_test_MI[name]))
                     best_test_MI[name] = test_MI[name]
                     best_train_MIs[name] = train_MIs[name]
                     bestargs[name] = copy.deepcopy(args)
@@ -160,9 +159,10 @@ def meta_main(args):
     plt.plot(x, [math.log(args.N) for _ in range(args.steps)],
              linestyle='dashed', color='0.5', label='ln N')
     plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))
-    plt.ylim(-1.5, max(max(best_train_MIs['doe']), mi) + 5)
+    plt.ylim(-1.5, max(max(best_train_MIs['doe']),
+                       max(best_train_MIs['doe_l']), mi) + 5)
     plt.xlim(1, args.steps)
-    plt.savefig('best_train.pdf', bbox_inches='tight')
+    plt.savefig(args.figname + '.pdf', bbox_inches='tight')
 
     print('-'*150)
     print('Best test estimates on {:d} samples'.format(10 * args.N))
@@ -205,6 +205,8 @@ if __name__ == '__main__':
     parser.add_argument('--nruns', type=int, default=1,
                         help='number of random runs (not random if set to 1) '
                         '[%(default)d]')
+    parser.add_argument('--figname', type=str, default='best_train',
+                        help='figure name [%(default)s]')
     parser.add_argument('--seed', type=int, default=42,
                         help='random seed [%(default)d]')
     parser.add_argument('--cuda', action='store_true',
