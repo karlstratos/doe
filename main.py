@@ -146,18 +146,26 @@ def meta_main(args):
     plt.figure(figsize=(12,5))
     x = range(1, args.steps + 1)
     plt.plot(x, best_train_MIs['doe'], "-r", label='DoE (Gaussian)',
-             linewidth=0.5)
+             linewidth=0.5, alpha=1.0)
     plt.plot(x, best_train_MIs['doe_l'], color='tab:orange',
-             label='DoE (Logistic)', linewidth=0.5)
-    plt.plot(x, best_train_MIs['mine'], "-g", label='MINE', linewidth=0.5)
-    plt.plot(x, best_train_MIs['cpc'], "-b", label='CPC', linewidth=0.5)
-    plt.plot(x, best_train_MIs['nwj'], "-y", label='NWJ', linewidth=0.5)
-    plt.plot(x, best_train_MIs['nwjjs'], "-m", label='NWJ (JS)', linewidth=0.5)
-    plt.plot(x, best_train_MIs['interpol'], "-c", label='CPC+NWJ',
+             label='DoE (Logistic)', linewidth=0.5, alpha=1.0)
+    plt.plot(x, best_train_MIs['nwj'], "-y", label='NWJ', linewidth=0.4,
+             alpha=1.0)
+    plt.plot(x, best_train_MIs['nwjjs'], color='tab:brown', label='NWJ (JS)',
+             linewidth=0.5, alpha=1.0)
+    plt.plot(x, best_train_MIs['dv'], color='tab:pink', label='DV',
              linewidth=0.5)
-    plt.plot(x, [mi for _ in range(args.steps)], '-k', label='I(X,Y)')
+    plt.plot(x, best_train_MIs['mine'], "-g", label='MINE', linewidth=0.5,
+             alpha=1.0)
+    plt.plot(x, best_train_MIs['cpc'], "-b", label='CPC', linewidth=0.5,
+             alpha=1.0)
+    plt.plot(x, best_train_MIs['interpol'], "-c", label='CPC+NWJ',
+             linewidth=0.5, alpha=1.0)
+    plt.plot(x, [mi for _ in range(args.steps)], '-k', label='I(X,Y)',
+             linewidth=0.8)
     plt.plot(x, [math.log(args.N) for _ in range(args.steps)],
-             linestyle='dashed', color='0.5', label='ln N')
+             linestyle='dashed', color='0.5', label='ln N',
+             linewidth=0.8)
     plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))
     plt.ylim(-1.5, max(max(best_train_MIs['doe']),
                        max(best_train_MIs['doe_l']), mi) + 5)
