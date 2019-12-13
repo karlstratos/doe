@@ -3,8 +3,8 @@ import argparse
 import copy
 import inspect
 import math
-import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 import random
 import torch
 import torch.nn as nn
@@ -143,35 +143,6 @@ def meta_main(args):
                     best_train_MIs[name] = train_MIs[name]
                     bestargs[name] = copy.deepcopy(args)
 
-    plt.figure(figsize=(12,5))
-    x = range(1, args.steps + 1)
-    plt.plot(x, best_train_MIs['doe'], "-r", label='DoE (Gaussian)',
-             linewidth=0.5, alpha=1.0)
-    plt.plot(x, best_train_MIs['doe_l'], color='tab:orange',
-             label='DoE (Logistic)', linewidth=0.5, alpha=1.0)
-    plt.plot(x, best_train_MIs['nwj'], "-y", label='NWJ', linewidth=0.4,
-             alpha=1.0)
-    plt.plot(x, best_train_MIs['nwjjs'], color='tab:brown', label='NWJ (JS)',
-             linewidth=0.5, alpha=1.0)
-    plt.plot(x, best_train_MIs['dv'], color='tab:pink', label='DV',
-             linewidth=0.5)
-    plt.plot(x, best_train_MIs['mine'], "-g", label='MINE', linewidth=0.5,
-             alpha=1.0)
-    plt.plot(x, best_train_MIs['cpc'], "-b", label='CPC', linewidth=0.5,
-             alpha=1.0)
-    plt.plot(x, best_train_MIs['interpol'], "-c", label='CPC+NWJ',
-             linewidth=0.5, alpha=1.0)
-    plt.plot(x, [mi for _ in range(args.steps)], '-k', label='I(X,Y)',
-             linewidth=0.8)
-    plt.plot(x, [math.log(args.N) for _ in range(args.steps)],
-             linestyle='dashed', color='0.5', label='ln N',
-             linewidth=0.8)
-    plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))
-    plt.ylim(-1.5, max(max(best_train_MIs['doe']),
-                       max(best_train_MIs['doe_l']), mi) + 5)
-    plt.xlim(1, args.steps)
-    plt.savefig(args.figname + '.pdf', bbox_inches='tight')
-
     M = args.c * args.N
     print('-'*150)
     print('Best test estimates on {:d} samples'.format(M))
@@ -182,6 +153,9 @@ def meta_main(args):
     print('-'*150)
     print('ln({:d}): {:.2f}'.format(M, math.log(M)))
     print('I(X,Y): {:.2f}'.format(mi))
+
+    cukes = (args, mi, best_train_MIs, best_test_MI, bestargs)
+    pickle.dump(cukes, open(args.pickle, 'wb'))
 
 
 if __name__ == '__main__':
@@ -217,8 +191,8 @@ if __name__ == '__main__':
     parser.add_argument('--nruns', type=int, default=1,
                         help='number of random runs (not random if set to 1) '
                         '[%(default)d]')
-    parser.add_argument('--figname', type=str, default='best_train',
-                        help='figure name [%(default)s]')
+    parser.add_argument('--pickle', type=str, default='cukes.p',
+                        help='output pickle file path [%(default)s]')
     parser.add_argument('--seed', type=int, default=42,
                         help='random seed [%(default)d]')
     parser.add_argument('--cuda', action='store_true',

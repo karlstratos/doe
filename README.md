@@ -1,24 +1,13 @@
 # mmi-limit
 
-
 ## Large MI=106.29
 
-N=64; R=3000; CUDA_VISIBLE_DEVICES=5 python main.py --N ${N} --steps ${R} --nruns 100 --figname ~/mmi-limit-experiments/N${N}_steps${R}_new --cuda > ~/mmi-limit-experiments/log_N${N}_steps${R}_new.txt;
-N=128; R=3000; CUDA_VISIBLE_DEVICES=7 python main.py --N ${N} --steps ${R} --nruns 100 --figname ~/mmi-limit-experiments/N${N}_steps${R}_new --cuda > ~/mmi-limit-experiments/log_N${N}_steps${R}_new.txt;
-N=256; R=3000; CUDA_VISIBLE_DEVICES=0 python main.py --N ${N} --steps ${R} --nruns 100 --figname ~/mmi-limit-experiments/N${N}_steps${R}_new --cuda > ~/mmi-limit-experiments/log_N${N}_steps${R}_new.txt;
-N=512; R=3000; CUDA_VISIBLE_DEVICES=0 python main.py --N ${N} --steps ${R} --nruns 100 --figname ~/mmi-limit-experiments/N${N}_steps${R}_new --cuda > ~/mmi-limit-experiments/log_N${N}_steps${R}_new.txt;
+N=128; CUDA_VISIBLE_DEVICES=5 python main.py --N ${N} --steps 12000 --nruns 100 --figname ~/mmi-limit-experiments/final_N${N} --cuda > ~/mmi-limit-experiments/log_final_N${N}.txt;
+N=256; CUDA_VISIBLE_DEVICES=6 python main.py --N ${N} --steps 6000 --nruns 100 --figname ~/mmi-limit-experiments/final_N${N} --cuda > ~/mmi-limit-experiments/log_final_N${N}.txt;
+N=512; CUDA_VISIBLE_DEVICES=7 python main.py --N ${N} --steps 3000 --nruns 100 --figname ~/mmi-limit-experiments/final_N${N} --cuda > ~/mmi-limit-experiments/log_final_N${N}.txt;
 
-## Large MI=106.29, large N=2048 (ln(N)=7.62), eval on N=2048
+## Small MI=6.04
 
-N=2048; R=3000; CUDA_VISIBLE_DEVICES=0 python main.py --N ${N} --steps ${R} --nruns 100 --figname ~/mmi-limit-experiments/N${N}_steps${R}_new --cuda > ~/mmi-limit-experiments/log_N${N}_steps${R}_new.txt;
-
-
-## Small MI=6.04, large N=1024 (ln(N)=6.93), eval on N=1024
-
-N=1024; R=3000; CUDA_VISIBLE_DEVICES=3 python main.py --rho 0.3 --N ${N} --steps ${R} --nruns 100 --figname ~/mmi-limit-experiments/rho0.3_N${N}_steps${R}_new --cuda > ~/mmi-limit-experiments/log_rho0.3_N${N}_steps${R}_new.txt;
-
-
-
-## Large MI=106.29, small N=64 (ln(N)=4.16), eval on 10N=640 (earlier setting)
-
-N=64; R=3000; CUDA_VISIBLE_DEVICES=0 python main.py --N ${N} --c 10 --steps ${R} --nruns 100 --figname ~/mmi-limit-experiments/N${N}_c10_steps${R}_new --cuda > ~/mmi-limit-experiments/log_N${N}_c10_steps${R}_new.txt;
+N=128; CUDA_VISIBLE_DEVICES=2 python main.py --N ${N} --dim 64 --rho 0.3 --steps 12000 --nruns 100 --figname ~/mmi-limit-experiments/final_smallMI_N${N} --cuda > ~/mmi-limit-experiments/log_final_smallMI_N${N}.txt;
+N=256; CUDA_VISIBLE_DEVICES=3 python main.py --N ${N} --dim 64 --rho 0.3 --steps 6000 --nruns 100 --figname ~/mmi-limit-experiments/final_smallMI_N${N} --cuda > ~/mmi-limit-experiments/log_final_smallMI_N${N}.txt;
+N=512; CUDA_VISIBLE_DEVICES=4 python main.py --N ${N} --dim 64 --rho 0.3 --steps 3000 --nruns 100 --figname ~/mmi-limit-experiments/final_smallMI_N${N} --cuda > ~/mmi-limit-experiments/log_final_smallMI_N${N}.txt;
