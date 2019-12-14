@@ -35,9 +35,9 @@ def main(args0):
              linewidth=0.8)
     plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))
     plt.ylim(-1.5,
-             min(max(max(best_train_MIs['doe']),
-                     max(best_train_MIs['doe_l'])),
-                 mi + 10) + 5
+             max(max(best_train_MIs['doe']),
+                 max(best_train_MIs['doe_l']),
+                 mi) + 5
     )
     plt.xlim(1, args.steps)
     plt.savefig(args0.figure, bbox_inches='tight')
