@@ -39,7 +39,7 @@ The stored PDF file looks like [this](plot_dim128_rho0.5_N128.pdf).
 
 ### References
 
-[1] [Formal Limitations on the Measurement of Mutual Information (McAllester and Stratos, AISTATS 2020)](https://arxiv.org/abs/1811.04251)
+[1] [Formal Limitations on the Measurement of Mutual Information (McAllester and Stratos, AISTATS 2020)](http://karlstratos.com/publications/aistats20limit.pdf)
 
 [2] [On Variational Bounds of Mutual Information (Poole et al., ICML 2019)](https://arxiv.org/abs/1905.06922)
 
