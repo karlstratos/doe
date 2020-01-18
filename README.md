@@ -35,8 +35,7 @@ You can visualize the best training session for each estimator by using the prov
 python plot.py dim128_rho0.5_N128.p --figure plot_dim128_rho0.5_N128.pdf 
 ```
 
-The stored PDF file looks like this:
-![](plot_dim128_rho0.5_N128.pdf)
+The stored PDF file looks like [this](plot_dim128_rho0.5_N128.pdf).
 
 ### References
 
