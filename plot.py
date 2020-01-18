@@ -10,6 +10,8 @@ def main(args0):
     (args, mi, best_train_MIs, best_test_MI, bestargs) \
         = pickle.load(open(args0.pickle, 'rb'))
 
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='serif')
     plt.figure(figsize=(12,5))
     x = range(1, args.steps + 1)
     plt.plot(x, best_train_MIs['doe'], "-r", label='DoE (Gaussian)',
